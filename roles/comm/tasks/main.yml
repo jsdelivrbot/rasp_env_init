@@ -2,52 +2,66 @@
 # common tasks env init
 
 - name: change passwd
-  command: echo 1q2w3e | passwd --stdin pirate
+  shell: 'echo "pirate:1q2w3e"|chpasswd'
 
 - name: apt-get install git -y
   apt: name=git update_cache=no
 
-- name: 拉取git内容
-  command: git clone https://github.com/wadee/rasp_env_init /tmp/rasp_env_init
-
 - name: 替换国内apt源
-  copy: src=/tmp/rasp_env_init/source.list dest=/etc/apt/source.list
-
-- name: apt-get update && upgrade
-  command: apt-get update && apt-get upgrade
+  copy: src=source.list dest=/etc/apt/source.list
 
 #zsh start
 - name: apt-get install zsh -y
-  command: apt-get install zsh -y
+  apt: name=zsh 
 - name: 安装oh-my-zsh
-  command: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+  raw: 'curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh'
 - name: 修改zsh为系统默认shell
-  command: chss -s /bin/zsh root && chsh -s /bin/zsh
+  shell: chsh -s /bin/zsh root
+- name: 修改zsh为系统默认shell
+  shell: chsh -s /bin/zsh pirate
 - name: add .zshrc
-  copy: src=/tmp/rasp_env_init/zshrc dest=/home/pirate/.zshrc
+  copy: src=zshrc dest=/home/pirate/.zshrc
 #zsh finish
 
 #vim start
 - name: apt-get install vim -y
-  command: apt-get install vim -y
+  apt: name=vim
 - name : vimrc
-  copy: src=/tmp/rasp_env_init/vimrc dest=/home/pirate/.vimrc
+  copy: src=vimrc dest=/home/pirate/.vimrc
 - name : vimrc
-  copy: src=/tmp/rasp_env_init/vimrc dest=/root/.vimrc
+  copy: src=vimrc dest=/root/.vimrc
 #vim finish
 
 - name: apt-get install strace -y
-  command: apt-get install strace -y
-
-- name: install x11 and chrome
-  command: curl -sSL https://github.com/hypriot/x11-on-HypriotOS/raw/master/install-x11-basics.sh | bash && curl -sSL https://github.com/hypriot/x11-on-HypriotOS/raw/master/install-chromium-browser.sh | bash
+  apt: name={{ item }}
+  with_items: 
+   - strace
+   - ebtables
+   - socat
 
 ### k8s start
-- name: install ebtables socat
-  command: apt-get install ebtables socat -y
+- name: copy k8s deb
+  copy: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+   - {src: 'k8s_deb/kubeadm_1.5.0-alpha.0-1534-gcf7301f-00_armhf_1c365734c7e7b034d604d5438de69372c279be82026628d2c6b60a6733e7c474.deb',dest: '/tmp/kubeadm_1.5.0.deb'}
+   - {src: 'k8s_deb/kubectl_1.4.3-00_armhf_da94775a34702fbd9cf8fcb02ff8d11e7bd04a750263978d0e5ecab7338415c7.deb',dest: '/tmp/kubectl_1.4.3.deb'}
+   - {src: 'k8s_deb/kubelet_1.4.3-00_armhf_ea5a5c6fda97f8836c70d5b9d9b18d62b2dacbfd5ce93a6b0f280944ec60b506.deb',dest: '/tmp/kubelet_1.4.3.deb'}
+   - {src: 'k8s_deb/kubernetes-cni_0.3.0.1-07a8a2-00_armhf_192f7340f3e6b29b284b25a2aaed96db2f7f5335962622a259f80d2993d392c3.deb',dest: '/tmp/kubernetes-cni_0.3.0.1.deb'}
 - name: dpkg安装k8s
-  command: cd /tmp/rasp_env_init/k8s_deb && dpkg -i *
+  apt: deb={{ item }}
+  with_items:
+    - /tmp/kubeadm_1.5.0.deb
+    - /tmp/kubectl_1.4.3.deb
+    - /tmp/kubelet_1.4.3.deb
+    - /tmp/kubernetes-cni_0.3.0.1.deb
 ### k8s finish
+
+#- name: install x11
+#  raw: 'curl -sSL https://github.com/hypriot/x11-on-HypriotOS/raw/master/install-x11-basics.sh | bash'
+#- name: install chrome
+#  raw: 'curl -sSL https://github.com/hypriot/x11-on-HypriotOS/raw/master/install-chromium-browser.sh | bash'
+
+
 
 
 
