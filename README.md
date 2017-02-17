@@ -14,6 +14,9 @@
 ### X11,chrome on rasp
 * https://github.com/hypriot/x11-on-HypriotOS
 
+### strace
+* apt-get install strace
+
 ###zsh
 * https://blog.phpgao.com/oh-my-zsh.html
 ### vim
@@ -27,3 +30,5 @@
 ### k8s 
 * mirrors.aliyun.com 还不行！！
 * 手动下载安装
+* apt-get install ebtables socat
+* dkpg -i ku*
