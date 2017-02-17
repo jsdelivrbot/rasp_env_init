@@ -49,3 +49,5 @@
   command: cd /tmp/rasp_env_init/k8s_deb && dpkg -i *
 ### k8s finish
 
+
+
