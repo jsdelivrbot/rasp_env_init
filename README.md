@@ -20,9 +20,10 @@
 ### strace
 * apt-get install strace
 
-###zsh
+### zsh
 * https://blog.phpgao.com/oh-my-zsh.html
 ### vim
+* 
 
 ### shadowsocks
 * https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-使用说明
