@@ -1,0 +1,46 @@
+---
+# common tasks env init
+
+- name: change passwd
+  sudo: yes
+  command: passwd 1q2w3e
+
+- name: apt-get install git -y
+  sudo: yes
+  command: apt-get install git -y
+
+- name: 拉取git内容
+  sudo: yes
+  command: cd /tmp && https://github.com/wadee/rasp_env_init
+
+- name: 替换国内apt源
+  sudo: yes
+  copy: src=/tmp/rasp_env_init/source.list dest=/etc/apt/source.list
+
+- name: apt-get update && upgrade
+  sudo: yes
+  command: apt-get update && apt-get upgrade
+
+#zsh start
+- name: apt-get install zsh -y
+  sudo: yes
+  command: apt-get install zsh -y
+- name: 安装oh-my-zsh
+  sudo: yes
+  command: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+- name: 修改zsh为系统默认shell
+  sudo: yes
+  command: chss -s /bin/zsh root && chsh -s /bin/zsh
+- name: add .zshrc
+  sudo: yes
+  copy: src=/tmp/rasp_env_init/zshrc dest=/home/pirate/.zshrc
+#zsh finish
+
+- name: apt-get install strace -y
+  sudo: yes
+  command: apt-get install strace -y
+
+- name: install x11 and chrome
+  sudo: yes
+  command: curl -sSL https://github.com/hypriot/x11-on-HypriotOS/raw/master/install-x11-basics.sh | bash && curl -sSL https://github.com/hypriot/x11-on-HypriotOS/raw/master/install-chromium-browser.sh | bash
+

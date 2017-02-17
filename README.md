@@ -9,6 +9,9 @@
 
 ### passwd
 * sudo passwd 1q2w3e
+
+### git
+* 
 ###apt-get 国内源
 * 见git中source.list
 ### X11,chrome on rasp
