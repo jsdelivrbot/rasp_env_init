@@ -1,14 +1,32 @@
 ---
 # common tasks env init
 
+- name: Set up authorized keys
+  authorized_key:
+    user: pirate
+    state: present
+    # path: "/pirate/.ssh/authorized_keys"
+    key: '{{ item }}'
+  with_file:
+    - liangzh_id_ras.pub
+
 - name: change passwd
   shell: 'echo "pirate:1q2w3e"|chpasswd'
 
-- name: apt-get install git -y
-  apt: name=git update_cache=no
+- name: apt upgrade
+  apt: upgrade=yes update_cache=yes
+# upgrade=dist
 
 - name: 替换国内apt源
   copy: src=source.list dest=/etc/apt/source.list
+
+- name: apt-get install
+  apt: name={{ item }}
+  with_items: 
+   - strace
+   - ebtables
+   - socat
+   - git
 
 #zsh start
 - name: apt-get install zsh -y
@@ -32,13 +50,6 @@
   copy: src=vimrc dest=/root/.vimrc
 #vim finish
 
-- name: apt-get install strace -y
-  apt: name={{ item }}
-  with_items: 
-   - strace
-   - ebtables
-   - socat
-
 ### k8s start
 - name: copy k8s deb
   copy: src={{ item.src }} dest={{ item.dest }}
@@ -55,11 +66,6 @@
     - /tmp/kubelet_1.4.3.deb
     - /tmp/kubernetes-cni_0.3.0.1.deb
 ### k8s finish
-
-#- name: install x11
-#  raw: 'curl -sSL https://github.com/hypriot/x11-on-HypriotOS/raw/master/install-x11-basics.sh | bash'
-#- name: install chrome
-#  raw: 'curl -sSL https://github.com/hypriot/x11-on-HypriotOS/raw/master/install-chromium-browser.sh | bash'
 
 
 
