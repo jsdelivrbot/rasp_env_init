@@ -18,7 +18,10 @@
 # upgrade=dist
 
 - name: 替换国内apt源
-  copy: src=source.list dest=/etc/apt/source.list
+  copy: src=sources.list dest=/etc/apt/sources.list
+
+- name: 导入aliyun k8s apt-key
+  shell: curl "https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg" | apt-key add -
 
 - name: apt-get install
   apt: name={{ item }}
@@ -27,19 +30,9 @@
    - ebtables
    - socat
    - git
-
-#zsh start
-- name: apt-get install zsh -y
-  apt: name=zsh 
-- name: 安装oh-my-zsh
-  raw: 'curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh'
-- name: 修改zsh为系统默认shell
-  shell: chsh -s /bin/zsh root
-- name: 修改zsh为系统默认shell
-  shell: chsh -s /bin/zsh pirate
-- name: add .zshrc
-  copy: src=zshrc dest=/home/pirate/.zshrc
-#zsh finish
+   - python-pip
+   - privoxk
+   - telnet
 
 #vim start
 - name: apt-get install vim -y
@@ -50,21 +43,74 @@
   copy: src=vimrc dest=/root/.vimrc
 #vim finish
 
+#zsh start
+- name: apt-get install zsh -y
+  apt: name=zsh 
+- name: 安装oh-my-zsh
+  raw: 'curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh'
+- name: 修改zsh为系统默认shell
+  shell: chsh -s /bin/zsh root
+- name: 修改zsh为系统默认shell
+  shell: chsh -s /bin/zsh pirate
+- name: add .zshrc pirate
+  copy: src=zshrc dest=/home/pirate/.zshrc
+- name: add .zshrc root
+  copy: src=zshrc dest=/root/.zshrc
+- name: cp .oh-my-zsh to /home/pirate/
+  shell: cp -r /root/.oh-my-zsh /home/pirate/
+#zsh finish
+
+- name: pip 
+  pip: name={{ item }}
+  with_items: 
+   - shadowsocks
+
+- name: bak privoxy/config
+  shell: mv /etc/privoxy/config /etc/privoxy/config.bal
+
+- name: privoxy config
+  copy: src=privoxy.config dest=/etc/privoxy/config
+
+
+- name: shadowsocks.json
+  copy: src=shadowsocks.json dest=/home/pirate/shadowsocks.json
+
+
+- name: sslocal start
+  shell: nohup sslocal -c /home/pirate/shadowsocks.json &
+
+- name: privoxy restart
+  shell: /etc/init.d/privoxy restart
+
+- name: export http_proxy
+  shell: export http_proxy='http://127.0.0.1:8118'
+
+- name: export https_proxy
+  shell: export https_proxy='http://127.0.0.1:8118'
+
+- name: k8s apt
+  shell: 'echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list'
+
+- name: k8s apt gpg
+  shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+
 ### k8s start
+## dpkg的顺序不能变
 - name: copy k8s deb
   copy: src={{ item.src }} dest={{ item.dest }}
   with_items:
-   - {src: 'k8s_deb/kubeadm_1.5.0-alpha.0-1534-gcf7301f-00_armhf_1c365734c7e7b034d604d5438de69372c279be82026628d2c6b60a6733e7c474.deb',dest: '/tmp/kubeadm_1.5.0.deb'}
-   - {src: 'k8s_deb/kubectl_1.4.3-00_armhf_da94775a34702fbd9cf8fcb02ff8d11e7bd04a750263978d0e5ecab7338415c7.deb',dest: '/tmp/kubectl_1.4.3.deb'}
-   - {src: 'k8s_deb/kubelet_1.4.3-00_armhf_ea5a5c6fda97f8836c70d5b9d9b18d62b2dacbfd5ce93a6b0f280944ec60b506.deb',dest: '/tmp/kubelet_1.4.3.deb'}
-   - {src: 'k8s_deb/kubernetes-cni_0.3.0.1-07a8a2-00_armhf_192f7340f3e6b29b284b25a2aaed96db2f7f5335962622a259f80d2993d392c3.deb',dest: '/tmp/kubernetes-cni_0.3.0.1.deb'}
+   - {src: 'k8s_deb/kubeadm_1.6.0-alpha.0-2074-a092d8e0f95f52-00_armhf_4be9b6e5a516e1c7c0d39fca3d6fc6ab4fa2c0a354461c810defbffa50c3a521.deb',dest: '/tmp/kubeadm.deb'}
+   - {src: 'k8s_deb/kubectl_1.5.2-00_armhf_c7f6d9ac3cf4ee04dd1709717ea7431eac2b83716d37bb74856c88659186c49b.deb',dest: '/tmp/kubectl.deb'}
+   - {src: 'k8s_deb/kubelet_1.5.2-00_armhf_d2b2fda087939ad6d1c1e8ccb8734f28a2f1f908a3b927f296dbb54bf49a1566.deb',dest: '/tmp/kubelet.deb'}
+   - {src: 'k8s_deb/kubernetes-cni_0.3.0.1-07a8a2-00_armhf_192f7340f3e6b29b284b25a2aaed96db2f7f5335962622a259f80d2993d392c3.deb',dest: '/tmp/kubernetes-cni.deb'}
 - name: dpkg安装k8s
   apt: deb={{ item }}
   with_items:
-    - /tmp/kubeadm_1.5.0.deb
-    - /tmp/kubectl_1.4.3.deb
-    - /tmp/kubelet_1.4.3.deb
-    - /tmp/kubernetes-cni_0.3.0.1.deb
+    - /tmp/kubernetes-cni.deb
+    - /tmp/kubectl.deb
+    - /tmp/kubelet.deb
+    - /tmp/kubeadm.deb
 ### k8s finish
 
 

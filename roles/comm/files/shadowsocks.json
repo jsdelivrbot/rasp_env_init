@@ -1,0 +1,8 @@
+{
+    "server":"j0.0bad.com",
+    "server_port":27530,
+    "local_port":1080,
+    "password":"SoFuckGfw0623",
+    "timeout":600,
+    "method":"aes-128-cfb"
+}
