@@ -31,7 +31,7 @@
    - socat
    - git
    - python-pip
-   - privoxk
+   - privoxy
    - telnet
    - tcpdump
 
@@ -70,8 +70,13 @@
   shell: mv /etc/privoxy/config /etc/privoxy/config.bal
 
 - name: privoxy config
-  copy: src=privoxy.config dest=/etc/privoxy/config
+  copy: src=privoxy/config dest=/etc/privoxy/config
 
+- name: privoxy action
+  copy: src=privoxy/gfw20170223.action dest=/etc/privoxy/gfw20170223.action
+
+- name: rc.local config
+  copy: src=rc.local dest=/etc/rc.local
 
 - name: shadowsocks.json
   copy: src=shadowsocks.json dest=/home/pirate/shadowsocks.json

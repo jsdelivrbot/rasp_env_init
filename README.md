@@ -44,6 +44,7 @@
 ```
 e80a5f.e7ed617f3120484c
 
+kubeadm join --token=e80a5f.e7ed617f3120484c 192.168.31.199
 
 ```
 
