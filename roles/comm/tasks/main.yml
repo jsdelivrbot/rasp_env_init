@@ -83,7 +83,7 @@
 
 
 - name: sslocal start
-  shell: nohup sslocal -c /home/pirate/shadowsocks.json &
+  shell: nohup sslocal -c /home/pirate/shadowsocks.json > /dev/null 2>&1  &
 
 - name: privoxy restart
   shell: /etc/init.d/privoxy restart
@@ -102,6 +102,7 @@
   shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
   environment:
     http_proxy: http://127.0.0.1:8118
+    https_proxy: http://127.0.0.1:8118
 
 
 ### k8s start
@@ -126,6 +127,7 @@
   apt: upgrade=yes
   environment:
     http_proxy: http://127.0.0.1:8118
+    https_proxy: http://127.0.0.1:8118
 
 
 
