@@ -658,6 +658,8 @@ d1c37gjwa26taa.cloudfront.net:443
 :80/.*\.google\.co\.uk
 .*.google.com*.:80
 :80/.*\.google\.com
+.*.google.com*.:443
+:443/.*\.google\.com
 .*.google.de*.:80
 :80/.*\.google\.de
 .*.google.dj*.:80
