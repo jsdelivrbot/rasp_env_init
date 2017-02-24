@@ -129,6 +129,13 @@
     http_proxy: http://127.0.0.1:8118
     https_proxy: http://127.0.0.1:8118
 
+- name: docker proxy
+  copy: src=docker/http-proxy.conf dest=/etc/systemd/system/docker.service.d
+
+- name: docker restart
+  shell: systemctl docker restart
+
+
 
 
 
