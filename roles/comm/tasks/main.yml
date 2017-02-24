@@ -88,17 +88,20 @@
 - name: privoxy restart
   shell: /etc/init.d/privoxy restart
 
-- name: export http_proxy
-  shell: export http_proxy='http://127.0.0.1:8118'
+# - name: export http_proxy
+#   shell: export http_proxy='http://127.0.0.1:8118'
 
-- name: export https_proxy
-  shell: export https_proxy='http://127.0.0.1:8118'
+# - name: export https_proxy
+#   shell: export https_proxy='http://127.0.0.1:8118'
 
+####需要翻墙
 - name: k8s apt
   shell: 'echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list'
 
 - name: k8s apt gpg
   shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+  environment:
+    http_proxy: http://127.0.0.1:8118
 
 
 ### k8s start
@@ -121,6 +124,8 @@
 
 - name: apt upgrade
   apt: upgrade=yes
+  environment:
+    http_proxy: http://127.0.0.1:8118
 
 
 
