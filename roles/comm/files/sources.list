@@ -4,5 +4,3 @@ deb-src http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ jessie main non-f
 deb http://mirrors.zju.edu.cn/raspbian/raspbian/ jessie main non-free contrib
 deb-src http://mirrors.zju.edu.cn/raspbian/raspbian/ jessie main non-free contrib
 
-deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
-deb-src https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main

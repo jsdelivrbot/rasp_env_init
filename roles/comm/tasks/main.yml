@@ -20,8 +20,8 @@
 - name: 替换国内apt源
   copy: src=sources.list dest=/etc/apt/sources.list
 
-- name: 导入aliyun k8s apt-key
-  shell: curl "https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg" | apt-key add -
+# - name: 导入aliyun k8s apt-key
+#   shell: curl "https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg" | apt-key add -
 
 - name: apt-get install
   apt: name={{ item }}
@@ -33,6 +33,7 @@
    - python-pip
    - privoxk
    - telnet
+   - tcpdump
 
 #vim start
 - name: apt-get install vim -y
@@ -113,6 +114,9 @@
     - /tmp/kubeadm.deb
 ### k8s finish
 
+
+- name: apt upgrade
+  apt: upgrade=yes
 
 
 
