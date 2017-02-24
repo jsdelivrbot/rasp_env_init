@@ -67,7 +67,7 @@
    - shadowsocks
 
 - name: bak privoxy/config
-  shell: mv /etc/privoxy/config /etc/privoxy/config.bal
+  shell: mv /etc/privoxy/config /etc/privoxy/config.bak
 
 - name: privoxy config
   copy: src=privoxy/config dest=/etc/privoxy/config
