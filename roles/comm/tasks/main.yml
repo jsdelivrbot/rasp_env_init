@@ -13,6 +13,9 @@
 - name: change passwd
   shell: 'echo "pirate:1q2w3e"|chpasswd'
 
+- name: del kubernetes source
+  file: path=/etc/apt/sources.list.d/kubernetes.list state=absent
+
 - name: apt upgrade
   apt: upgrade=yes update_cache=yes
 # upgrade=dist
@@ -107,21 +110,26 @@
 
 ### k8s start
 ## dpkg的顺序不能变
-- name: copy k8s deb
-  copy: src={{ item.src }} dest={{ item.dest }}
-  with_items:
-   - {src: 'k8s_deb/kubeadm_1.6.0-alpha.0-2074-a092d8e0f95f52-00_armhf_4be9b6e5a516e1c7c0d39fca3d6fc6ab4fa2c0a354461c810defbffa50c3a521.deb',dest: '/tmp/kubeadm.deb'}
-   - {src: 'k8s_deb/kubectl_1.5.2-00_armhf_c7f6d9ac3cf4ee04dd1709717ea7431eac2b83716d37bb74856c88659186c49b.deb',dest: '/tmp/kubectl.deb'}
-   - {src: 'k8s_deb/kubelet_1.5.2-00_armhf_d2b2fda087939ad6d1c1e8ccb8734f28a2f1f908a3b927f296dbb54bf49a1566.deb',dest: '/tmp/kubelet.deb'}
-   - {src: 'k8s_deb/kubernetes-cni_0.3.0.1-07a8a2-00_armhf_192f7340f3e6b29b284b25a2aaed96db2f7f5335962622a259f80d2993d392c3.deb',dest: '/tmp/kubernetes-cni.deb'}
-- name: dpkg安装k8s
-  apt: deb={{ item }}
-  with_items:
-    - /tmp/kubernetes-cni.deb
-    - /tmp/kubectl.deb
-    - /tmp/kubelet.deb
-    - /tmp/kubeadm.deb
+# - name: copy k8s deb
+#   copy: src={{ item.src }} dest={{ item.dest }}
+#   with_items:
+#    - {src: 'k8s_deb/kubeadm_1.6.0-alpha.0-2074-a092d8e0f95f52-00_armhf_4be9b6e5a516e1c7c0d39fca3d6fc6ab4fa2c0a354461c810defbffa50c3a521.deb',dest: '/tmp/kubeadm.deb'}
+#    - {src: 'k8s_deb/kubectl_1.5.2-00_armhf_c7f6d9ac3cf4ee04dd1709717ea7431eac2b83716d37bb74856c88659186c49b.deb',dest: '/tmp/kubectl.deb'}
+#    - {src: 'k8s_deb/kubelet_1.5.2-00_armhf_d2b2fda087939ad6d1c1e8ccb8734f28a2f1f908a3b927f296dbb54bf49a1566.deb',dest: '/tmp/kubelet.deb'}
+#    - {src: 'k8s_deb/kubernetes-cni_0.3.0.1-07a8a2-00_armhf_192f7340f3e6b29b284b25a2aaed96db2f7f5335962622a259f80d2993d392c3.deb',dest: '/tmp/kubernetes-cni.deb'}
+# - name: dpkg安装k8s
+#   apt: deb={{ item }}
+#   with_items:
+#     - /tmp/kubernetes-cni.deb
+#     - /tmp/kubectl.deb
+#     - /tmp/kubelet.deb
+#     - /tmp/kubeadm.deb
 ### k8s finish
+- name: apt kubeadm
+  apt: name=kubeadm
+  environment:
+    http_proxy: http://127.0.0.1:8118
+    https_proxy: http://127.0.0.1:8118
 
 - name: apt upgrade
   apt: upgrade=yes
@@ -132,8 +140,11 @@
 - name: docker proxy
   copy: src=docker/http-proxy.conf dest=/etc/systemd/system/docker.service.d
 
+- name: systemctl daemon-reload
+  shell: systemctl daemon-reload
+
 - name: docker restart
-  shell: systemctl docker restart
+  shell: systemctl restart docker
 
 
 

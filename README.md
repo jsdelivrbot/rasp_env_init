@@ -58,3 +58,11 @@ kubeadm join --token=e80a5f.e7ed617f3120484c 192.168.31.199
 ### docker pull还是卡住
 * 解决方案： http://dockone.io/question/281
 
+
+# 2017.2.23
+### 以后更新gfw.action,记得加上
+```
+.*.google.com*.:443
+:443/.*\.google\.com
+```
+
