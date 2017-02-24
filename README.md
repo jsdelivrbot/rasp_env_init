@@ -42,7 +42,7 @@
 * kubeadm join --token=082791.e2d2af8e051945b9 192.168.31.199
 
 ```
-215d33.4eb87bcf725a837a
+e80a5f.e7ed617f3120484c
 
 
 ```

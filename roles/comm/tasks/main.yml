@@ -114,7 +114,6 @@
     - /tmp/kubeadm.deb
 ### k8s finish
 
-
 - name: apt upgrade
   apt: upgrade=yes
 
