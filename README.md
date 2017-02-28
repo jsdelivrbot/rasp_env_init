@@ -46,6 +46,9 @@ e80a5f.e7ed617f3120484c
 
 kubeadm join --token=e80a5f.e7ed617f3120484c 192.168.31.199
 
+╰─➤  kubectl -n kube-system get service kubernetes-dashboard -o template --template="{{ (index .spec.ports 0).nodePort }}" | xargs echo
+30656
+
 ```
 
 ### kubeadm 果然卡住……

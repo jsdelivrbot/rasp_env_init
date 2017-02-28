@@ -146,6 +146,8 @@
 - name: docker restart
   shell: systemctl restart docker
 
+- name: k8s teardown sh
+  copy: src=k8s/teardown.sh dest=/etc/k8s_teardown.sh mode=755
 
 
 
