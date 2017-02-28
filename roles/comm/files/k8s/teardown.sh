@@ -1,5 +1,6 @@
 #! /bin/bash
 
+kubeadm reset;
 systemctl stop kubelet;
 # 注意: 下面这条命令会干掉所有正在运行的 docker 容器，
 # 如果要进行重置操作，最好先确定当前运行的所有容器都能干掉(干掉不影响业务)，
