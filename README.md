@@ -37,17 +37,21 @@
 * apt-get install ebtables socat
 * dkpg -i ku*
 
+## 获取token
+kubectl -n kube-system get secret clusterinfo -o yaml | grep token-map | awk '{print $2}' | base64 --decode | sed "s|{||g;s|}||g;s|:|.|g;s/\"//g;" | xargs echo
+
 ### kubeadm init
 * kubeadm init --pod-network-cidr  10.244.0.0/16 --api-advertise-addresses=192.168.31.199
-* kubeadm join --token=082791.e2d2af8e051945b9 192.168.31.199
+* kubeadm join --token=366b43.1ccaf609e72593d9 192.168.31.199
 
 ```
-e80a5f.e7ed617f3120484c
-
-kubeadm join --token=e80a5f.e7ed617f3120484c 192.168.31.199
-
-╰─➤  kubectl -n kube-system get service kubernetes-dashboard -o template --template="{{ (index .spec.ports 0).nodePort }}" | xargs echo
-30656
+/etc sudo kubeadm init --pod-network-cidr  10.244.0.0/16 --api-advertise-addresses=192.168.31.199
+<master/tokens> generated token: "366b43.1ccaf609e72593d9"
+<master/pki> created keys and certificates in "/etc/kubernetes/pki"
+<util/kubeconfig> created "/etc/kubernetes/kubelet.conf"
+<util/kubeconfig> created "/etc/kubernetes/admin.conf"
+<master/apiclient> created API client configuration
+<master/apiclient> created API client, waiting for the control plane to become ready
 
 ```
 
@@ -55,17 +59,4 @@ kubeadm join --token=e80a5f.e7ed617f3120484c 192.168.31.199
 
 ### 自建docker registry
 * https://www.slahser.com/2016/09/29/pi-cluster%E4%B8%8A%E9%85%8D%E5%A5%97Registry/
-
-
-# 2017.2.24
-### docker pull还是卡住
-* 解决方案： http://dockone.io/question/281
-
-
-# 2017.2.23
-### 以后更新gfw.action,记得加上
-```
-.*.google.com*.:443
-:443/.*\.google\.com
-```
 
