@@ -11,6 +11,8 @@ rm -r -f /etc/kubernetes /var/lib/kubelet /var/lib/etcd;
 
 ip link delete cni0; 
 ip link delete flannel.1;
+ifconfig docker0 down;
+brctl delbr docker0;
 
 iptables -F;
 iptables -X;
@@ -18,3 +20,4 @@ iptables -Z;
 iptables -t nat -F;
 iptables -t nat -X;
 iptables -t nat -Z;
+#systemctl daemon-reload;

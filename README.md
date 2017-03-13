@@ -39,7 +39,7 @@
 
 ## 获取token
 kubectl -n kube-system get secret clusterinfo -o yaml | grep token-map | awk '{print $2}' | base64 --decode | sed "s|{||g;s|}||g;s|:|.|g;s/\"//g;" | xargs echo
-
+***
 ### kubeadm init
 * kubeadm init --pod-network-cidr  10.244.0.0/16 --api-advertise-addresses=192.168.31.199
 * kubeadm join --token=366b43.1ccaf609e72593d9 192.168.31.199
