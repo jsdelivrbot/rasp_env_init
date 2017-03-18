@@ -33,7 +33,7 @@ brctl delbr docker0   #删除网桥
 * 验证dns服务是不是正常运行
 
 ```
-kubectl exec my-pod -- nsloopup kubernetes.default.cluster.local
+kubectl exec my-pod -- nslookup kubernetes.default.cluster.local
 
 注：这个my-pod是需要创建的，比如说
 kubectl run test --image=hypriot/armhf-busybox -- sleep 10000
@@ -43,6 +43,7 @@ kubectl run test --image=hypriot/armhf-busybox -- sleep 10000
 
 ```
 * pod中的容器使用容器宿主机的DBS域名解析配置，称为默认DNS配置。另外，如果kube部署并设置了cluster DNS支持，那么在创建Pod的时候，默认会将Cluster DNS的配置写入Pod中Pod中容器的DNS域名解析配置中，称为Cluster DNS配置。
+
 ```
 pod的定义中通过.spec.dnsPolicy设置Pod的DNS策略，默认值是ClusterFirst.
 查看DNS策略设置为ClusterFirst的Pod中容器的/etc/resolv.conf
@@ -50,7 +51,7 @@ pod的定义中通过.spec.dnsPolicy设置Pod的DNS策略，默认值是ClusterF
 	kubectl exec pod_name -- cat /etc/resolv.conf
 	
 	类似输出：
-	nameserver 10.254.10.2
+	nameserver 10.254.10.2	
 	nameserver 218.85.157.99
 	search default.svc.cluster.local svc.cluster.local cluster.local
 	其中 第一行 是cluster DNS 的IP,第二行是宿主的默认DNS配置。
