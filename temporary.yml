@@ -1,0 +1,18 @@
+---
+# This playbook deploys the whole application stack in this site.
+
+- name: apply temporary configuration to all nodes
+  hosts: all
+  remote_user: pirate
+  become: yes
+  become_user: root
+  
+  tasks:
+  - name: generate docker opt
+    shell: sh /home/pirate/mk_docker_opt.sh -c -d /etc/default/docker
+
+  - name: flush docker daemon configuration change
+    shell: systemctl daemon-reload
+
+  - name: restart dockerd
+    shell: systemctl restart docker

@@ -40,9 +40,36 @@
 ## 获取token
 kubectl -n kube-system get secret clusterinfo -o yaml | grep token-map | awk '{print $2}' | base64 --decode | sed "s|{||g;s|}||g;s|:|.|g;s/\"//g;" | xargs echo
 ***
-### kubeadm init
-* kubeadm init --pod-network-cidr  10.244.0.0/16 --api-advertise-addresses=192.168.31.199
-* kubeadm join --token=9015e1.189de61962ff8070 192.168.31.199
+### 初始化流程
+#### master
+* kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address 192.168.31.199
+* sudo cp /etc/kubernetes/admin.conf $HOME/
+* sudo chown $(id -u):$(id -g) $HOME/admin.conf
+* export KUBECONFIG=$HOME/admin.conf
+* kubectl create -f kube-flannel-rbac.yml
+* kubectl create --namespace kube-system -f kube-flannel.yml
+#### slaves
+* kubeadm join --token 78db77.56e0689fb0170bb8 192.168.31.199:6443
+
+#### common
+* sh /home/pirate/mk\_docer_opt.sh -c -d /etc/default/docker
+	* something remind : MD:docker与docker云-关于docker配置文件
+* systemctl daemon-reload
+* systemctl restart docker
+
+```
+ansible script
+tasks:
+  - name: generate docker opt
+    shell: sh /home/pirate/mk_docer_opt.sh -c -d /etc/default/docker
+
+  - name: flush docker daemon configuration change
+    shell: systemctl daemon-reload
+
+  - name: restart dockerd
+    shell: systemctl restart docker
+```
+
 
 ```
 /etc sudo kubeadm init --pod-network-cidr  10.244.0.0/16 --api-advertise-addresses=192.168.31.199
