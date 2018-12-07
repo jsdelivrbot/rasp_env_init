@@ -2,6 +2,6 @@
 # master
 
 - name: setup flannel as the Pod network driver
-  shell: curl -sSL https://rawgit.com/coreos/flannel/master/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
+  shell: curl -sSL https://cdn.jsdelivr.net/gh/coreos/flannel/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
 
 - name:
